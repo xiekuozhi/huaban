@@ -16,45 +16,69 @@
         canvas.height = document.documentElement.clientHeight
         /*获取用户文档的屏幕宽、高*/
         let ctx = canvas.getContext("2d");
+        ctx.fillStyle = "black";
+        /*里面内容黑色*/
+        ctx.strokeStyle = 'black'
+        /*不要边框*/
+        ctx.lineWidth=6;
+        ctx.lineJoin="round";
+        
 
         let painting=false
         /*默认没有在画*/
+        let last
+        
+        var isTouchDevice="ontouchstart"in
+        document.documentElement;
 
-
-        ctx.fillStyle = "black";
-        /*里面内容黑色*/
-        ctx.strokeStyle = 'none'
-        /*不要边框*/
-
-        canvas.onmousedown = () => {
-            painting = true
-        }
-        /*鼠标点击开始画*/
-        canvas.onmousemove = (e) => {
-            /*在移动的时候*/
-            if (painting === true) {
-                /*如果开始点击*/
+        if(isTouchDevice){
+            canvas.ontouchmove=(e)=>{
+                let x=e.touches[0].clientX
+                /*获取手指的指向X*/
+                let y=e.touches[0].clientY
+                /*获取手指的指向Y*/
                 ctx.beginPath(); 
                 /*开始*/
-                ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);
+                ctx.arc(X, Y, 10, 0, 2 * Math.PI);
                 /*画圆形的点*/
                 ctx.stroke();
                 /*结束*/
                 ctx.fill();
                 /*里面的内容*/
-            } else {
-                console.log('什么都不做')
-                /*如果不点什么都不做*/
+            }
+
+        }else{
+            canvas.onmousedown = (e) => {
+            painting = true
+            last=[e.clientX,e.clientY]
+        }
+        /*鼠标点击开始画*/
+        canvas.onmousemove = (e) => {
+            /*在鼠标移动的时候*/
+
+            if (painting === true) {
+                /*如果开始点击*/ 
+                drawLine(last[0],last[1],e.clientX,e.clientY)
+                last=[e.clientX,e.clientY]
             }
         }
 
+
         canvas.onmouseup = () => {
             painting = false
+            }
         }
-        /*监听鼠标是否动*/
-
+        function drawLine(x1,y1,x2,y2){
+            ctx.beginPath();
+            ctx.moveTo(x1,y1);
+            ctx.lineTo(x2,y2);
+            ctx.stroke();
+        }
 
     </script>
     
 </body>
 </html>
+
+
+
